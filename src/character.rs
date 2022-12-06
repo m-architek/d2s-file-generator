@@ -1,6 +1,10 @@
-use crate::class::Class;
-use crate::difficulty::Difficulty;
-use crate::mode::Mode;
+pub use class::Class;
+pub use difficulty::Difficulty;
+pub use mode::Mode;
+
+mod class;
+mod mode;
+mod difficulty;
 
 #[derive(Debug)]
 pub struct Character {
