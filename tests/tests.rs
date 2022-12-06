@@ -1,13 +1,16 @@
+mod resources;
+
 use d2s_file_generator::{generate_d2s, Character, Class, Mode};
+use crate::resources::read_test_resource;
 
 #[test]
-fn should_generate_for_lvl1_character() {
+fn should_generate_lvl1_hc_character() {
     // given
     let character = Character {
-        name: String::from("Marcin"),
+        name: String::from("Test"),
         class: Class::Barbarian,
         level: 1,
-        mode: Mode::SC,
+        mode: Mode::HC,
         completed_difficulty: None
     };
 
@@ -15,6 +18,6 @@ fn should_generate_for_lvl1_character() {
     let result = generate_d2s(&character);
 
     // then
-    assert!(result.is_ok());
-    assert!(result.unwrap().len() > 0)
+    let expected = read_test_resource("Barbarian1_HC").unwrap();
+    assert_eq!(expected, result)
 }

@@ -13,7 +13,7 @@ fn main() -> Result<(), Error> {
         completed_difficulty: None
     };
 
-    let d2s = generate_d2s(&character)?;
+    let d2s = generate_d2s(&character);
 
     let path = build_path(&character.name)?;
     write_to_file(&path, &d2s)

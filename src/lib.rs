@@ -1,11 +1,10 @@
 use std::borrow::Borrow;
-use std::io::{Error, Write};
 
 pub use character::*;
 
 mod character;
 
-pub fn generate_d2s(character: &Character) -> Result<Vec<u8>, Error> {
+pub fn generate_d2s(character: &Character) -> Vec<u8> {
     println!("Generating {:#?}", character);
 
     let signature: u32 = 0xaa55aa55;
@@ -62,33 +61,33 @@ pub fn generate_d2s(character: &Character) -> Result<Vec<u8>, Error> {
     let stats: Vec<u8> = Vec::new();
 
     let mut bytes: Vec<u8> = Vec::new();
-    bytes.write(&signature.to_le_bytes())?;
-    bytes.write(&version_id.to_le_bytes())?;
-    bytes.write(&file_size_temp.to_le_bytes())?;
-    bytes.write(&checksum_temp.to_le_bytes())?;
-    bytes.write(&active_weapon.to_le_bytes())?;
-    bytes.write(&character_name)?;
-    bytes.write(&status.to_le_bytes())?;
-    bytes.write(&progression.to_le_bytes())?;
-    bytes.write(&[0; 2])?;
-    bytes.write(&class.to_le_bytes())?;
-    bytes.write(&[0; 2])?;
-    bytes.write(&level.to_le_bytes())?;
-    bytes.write(&[0; 4])?;
-    bytes.write(&last_played.to_le_bytes())?;
-    bytes.write(&[0; 4])?;
-    bytes.write(&hotkeys)?;
-    bytes.write(&mouse_buttons)?;
-    bytes.write(&menu_appearance)?;
-    bytes.write(&difficulty)?;
-    bytes.write(&map_id.to_le_bytes())?;
-    bytes.write(&[0; 2])?;
-    bytes.write(&mercenary)?;
-    bytes.write(&[0; 144])?;
-    bytes.write(&quests)?;
-    bytes.write(&waypoints)?;
-    bytes.write(&npc_introductions)?;
-    bytes.write(&stats)?;
+    bytes.extend(signature.to_le_bytes());
+    bytes.extend(&version_id.to_le_bytes());
+    bytes.extend(&file_size_temp.to_le_bytes());
+    bytes.extend(&checksum_temp.to_le_bytes());
+    bytes.extend(&active_weapon.to_le_bytes());
+    bytes.extend(&character_name);
+    bytes.extend(&status.to_le_bytes());
+    bytes.extend(&progression.to_le_bytes());
+    bytes.extend(&[0; 2]);
+    bytes.extend(&class.to_le_bytes());
+    bytes.extend(&[0; 2]);
+    bytes.extend(&level.to_le_bytes());
+    bytes.extend(&[0; 4]);
+    bytes.extend(&last_played.to_le_bytes());
+    bytes.extend(&[0; 4]);
+    bytes.extend(&hotkeys);
+    bytes.extend(&mouse_buttons);
+    bytes.extend(&menu_appearance);
+    bytes.extend(&difficulty);
+    bytes.extend(&map_id.to_le_bytes());
+    bytes.extend(&[0; 2]);
+    bytes.extend(&mercenary);
+    bytes.extend(&[0; 144]);
+    bytes.extend(&quests);
+    bytes.extend(&waypoints);
+    bytes.extend(&npc_introductions);
+    bytes.extend(&stats);
 
     let file_size: [u8; 4] = (bytes.len() as u32).to_le_bytes();
     bytes[8] = file_size[0];
@@ -102,7 +101,7 @@ pub fn generate_d2s(character: &Character) -> Result<Vec<u8>, Error> {
     bytes[14] = checksum[2];
     bytes[15] = checksum[3];
 
-    Ok(bytes)
+    bytes
 }
 
 fn calculate_checksum(bytes: &Vec<u8>) -> u32 {
