@@ -1,8 +1,8 @@
-use std::borrow::Borrow;
-
 pub use character::*;
+use crate::utils::ArrayOverwrite;
 
 mod character;
+mod utils;
 
 pub fn generate_d2s(character: &Character) -> Vec<u8> {
     println!("Generating {:#?}", character);
@@ -14,14 +14,12 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     let active_weapon: u32 = 0;
     let character_name: [u8; 16] = {
         let mut bytes: [u8; 16] = [0; 16];
-        for (i, char) in character.name.as_bytes().iter().enumerate() {
-            bytes[i] = char.to_le();
-        }
+        bytes.overwrite_with(&character.name.as_bytes(), 0);
         bytes
     };
     let status: u8 = match character.mode {
-        Mode::SC => 0,
-        Mode::HC => 2
+        Mode::SC => 0b0010_0000,
+        Mode::HC => 0b0010_0100
     };
     let progression: u8 = match &character.completed_difficulty {
         None => 0,
@@ -32,30 +30,26 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
         }
     };
     let class: u8 = match character.class {
-        Class::Amazon => 0x00,
-        Class::Sorceress => 0x01,
-        Class::Necromancer => 0x02,
-        Class::Paladin => 0x03,
-        Class::Barbarian => 0x04,
-        Class::Druid => 0x05,
-        Class::Assassin => 0x06
+        Class::Amazon => 0,
+        Class::Sorceress => 1,
+        Class::Necromancer => 2,
+        Class::Paladin => 3,
+        Class::Barbarian => 4,
+        Class::Druid => 5,
+        Class::Assassin => 6
     };
-    let level: u8 = character.level.unsigned_abs();
-    let last_played: u32 = 0;
-    let hotkeys: [u8; 64] = [0; 64];
-    let mouse_buttons: [u8; 16] = [0; 16];
-    let menu_appearance: [u8; 32] = [0; 32];
-    let difficulty: [u8; 3] = match character.completed_difficulty.borrow() {
-        None => [0_u8; 3],
+    let level: u8 = character.level;
+    let last_played: u32 = character.last_played;
+    let difficulty: [u8; 3] = match &character.completed_difficulty {
+        None => [DIFFICULTY_UNLOCKED, 0, 0],
         Some(difficulty) => match difficulty {
-            Difficulty::NORMAL => [7, 0, 0],
-            Difficulty::NIGHTMARE => [7, 7, 0],
-            Difficulty::HELL => [7, 7, 7]
+            Difficulty::NORMAL => [DIFFICULTY_UNLOCKED, DIFFICULTY_UNLOCKED, 0],
+            Difficulty::NIGHTMARE | Difficulty::HELL => [DIFFICULTY_UNLOCKED, DIFFICULTY_UNLOCKED, DIFFICULTY_UNLOCKED]
         }
-    }.map(|it| it.to_le());
-    let map_id: u32 = 0;
+    };
+    let map_id: u32 = character.map_id;
     let mercenary: [u8; 14] = [0; 14];
-    let quests: [u8; 298] = [0; 298];
+    let quests: [u8; 298] = build_quests(character);
     let waypoints: [u8; 81] = [0; 81];
     let npc_introductions: [u8; 51] = [0; 51];
     let stats: Vec<u8> = Vec::new();
@@ -71,14 +65,14 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     bytes.extend(&progression.to_le_bytes());
     bytes.extend(&[0; 2]);
     bytes.extend(&class.to_le_bytes());
-    bytes.extend(&[0; 2]);
+    bytes.extend(&[16, 30]);
     bytes.extend(&level.to_le_bytes());
     bytes.extend(&[0; 4]);
     bytes.extend(&last_played.to_le_bytes());
-    bytes.extend(&[0; 4]);
-    bytes.extend(&hotkeys);
-    bytes.extend(&mouse_buttons);
-    bytes.extend(&menu_appearance);
+    bytes.extend(&[u8::MAX; 4]);
+    bytes.extend(&DEFAULT_HOTKEYS);
+    bytes.extend(&DEFAULT_MOUSE_BUTTONS);
+    bytes.extend(&[u8::MAX; 32]);
     bytes.extend(&difficulty);
     bytes.extend(&map_id.to_le_bytes());
     bytes.extend(&[0; 2]);
@@ -112,3 +106,35 @@ fn calculate_checksum(bytes: &Vec<u8>) -> u32 {
     }
     sum
 }
+
+fn build_quests(character: &Character) -> [u8; 298] {
+    let mut quests: [u8; 298] = [0; 298];
+
+    let header: [u8; 10] = [87, 111, 111, 33, 6, 0, 0, 0, 42, 1];
+    quests.overwrite_with(&header, 0);
+
+    quests
+}
+
+const DEFAULT_HOTKEYS: [u8; 64] = [
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+    255, 255, 0, 0,
+];
+
+const DEFAULT_MOUSE_BUTTONS: [u8; 16] = [0; 16];
+
+const DIFFICULTY_UNLOCKED: u8 = 0b1000_0000;

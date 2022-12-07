@@ -10,7 +10,9 @@ mod difficulty;
 pub struct Character {
     pub name: String,
     pub class: Class,
-    pub level: i8,
+    pub level: u8,
     pub mode: Mode,
-    pub completed_difficulty: Option<Difficulty>
+    pub completed_difficulty: Option<Difficulty>,
+    pub last_played: u32,
+    pub map_id: u32
 }

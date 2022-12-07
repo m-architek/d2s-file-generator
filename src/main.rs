@@ -10,7 +10,9 @@ fn main() -> Result<(), Error> {
         class: Class::Barbarian,
         level: 1,
         mode: Mode::SC,
-        completed_difficulty: None
+        completed_difficulty: None,
+        last_played: 0,
+        map_id: 0
     };
 
     let d2s = generate_d2s(&character);
