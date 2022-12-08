@@ -47,7 +47,7 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     let mercenary: [u8; 14] = [0; 14];
     let quests: [u8; 298] = build_quests(character);
     let waypoints: [u8; 81] = build_waypoints(character);
-    let npc_introductions: [u8; 51] = [0; 51];
+    let npc_introductions: [u8; 81] = build_npc_introductions(character);
     let stats: Vec<u8> = Vec::new();
 
     let mut bytes: Vec<u8> = Vec::new();
@@ -136,7 +136,35 @@ fn build_waypoints(character: &Character) -> [u8; 81] {
 
     waypoints.overwrite_with(&header, 0);
     waypoints.overwrite_with(&body.concat(), header.len());
+    waypoints[80] = 1;
     waypoints
+}
+
+fn build_npc_introductions(character: &Character) -> [u8; 81] {
+    let mut npc_introductions: [u8; 81] = [0; 81];
+
+    let header: [u8; 3] = [119, 52, 0];
+    let body: [[u8; 8]; 6] = match &character.completed_difficulty {
+        None => [[0; 8], [0; 8], [0; 8], [0; 8], [0; 8], [0; 8]],
+        Some(difficulty) => match difficulty {
+            Difficulty::NORMAL => [
+                INTRODUCTIONS_COMPLETED, [0; 8], [0; 8],
+                GREETINGS_COMPLETED, [0; 8], [0; 8]
+            ],
+            Difficulty::NIGHTMARE => [
+                INTRODUCTIONS_COMPLETED, INTRODUCTIONS_COMPLETED, [0; 8],
+                GREETINGS_COMPLETED, GREETINGS_COMPLETED, [0; 8]]
+            ,
+            Difficulty::HELL => [
+                INTRODUCTIONS_COMPLETED, INTRODUCTIONS_COMPLETED, INTRODUCTIONS_COMPLETED,
+                GREETINGS_COMPLETED, GREETINGS_COMPLETED, GREETINGS_COMPLETED
+            ]
+        }
+    };
+
+    npc_introductions.overwrite_with(&header, 0);
+    npc_introductions.overwrite_with(&body.concat(), header.len());
+    npc_introductions
 }
 
 const DEFAULT_HOTKEYS: [u8; 64] = [
@@ -174,3 +202,6 @@ const WAYPOINTS_COMPLETED:[u8; 24] = [
     u8::MAX, u8::MAX, u8::MAX, u8::MAX, 0b0011_1111,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 ];
+
+const INTRODUCTIONS_COMPLETED: [u8; 8] = [u8::MAX; 8];
+const GREETINGS_COMPLETED: [u8; 8] = [u8::MAX; 8];
