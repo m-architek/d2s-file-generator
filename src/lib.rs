@@ -53,7 +53,6 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     let waypoints: [u8; 81] = build_waypoints(character);
     let npc_introductions: [u8; 51] = build_npc_introductions(character);
     let stats: Vec<u8> = build_stats(character);
-    let items: Vec<u8> = build_items();
 
     let mut bytes: Vec<u8> = Vec::new();
     bytes.extend(signature.to_le_bytes());
@@ -83,7 +82,8 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     bytes.extend(&waypoints);
     bytes.extend(&npc_introductions);
     bytes.extend(&stats);
-    bytes.extend(&items);
+    bytes.extend(&EMPTY_SKILLS);
+    bytes.extend(&EMPTY_ITEMS);
 
     let file_size: [u8; 4] = (bytes.len() as u32).to_le_bytes();
     bytes[8] = file_size[0];
@@ -225,10 +225,6 @@ fn build_stats(character: &Character) -> Vec<u8> {
     stats
 }
 
-fn build_items() -> Vec<u8> {
-    Vec::from([74, 77, 0, 0, 74, 77, 0, 0, 106, 102, 107, 102, 0])
-}
-
 const DEFAULT_HOTKEYS: [u8; 64] = [
     255, 255, 0, 0,
     255, 255, 0, 0,
@@ -267,3 +263,11 @@ const WAYPOINTS_COMPLETED:[u8; 24] = [
 
 const INTRODUCTIONS_COMPLETED: [u8; 8] = [u8::MAX; 8];
 const GREETINGS_COMPLETED: [u8; 8] = [u8::MAX; 8];
+
+const EMPTY_SKILLS: [u8; 32] = [
+    105, 102,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+];
+
+const EMPTY_ITEMS: [u8; 13] = [74, 77, 0, 0, 74, 77, 0, 0, 106, 102, 107, 102, 0];
