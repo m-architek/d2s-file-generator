@@ -46,7 +46,7 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     let map_id: u32 = character.map_id;
     let mercenary: [u8; 14] = [0; 14];
     let quests: [u8; 298] = build_quests(character);
-    let waypoints: [u8; 81] = [0; 81];
+    let waypoints: [u8; 81] = build_waypoints(character);
     let npc_introductions: [u8; 51] = [0; 51];
     let stats: Vec<u8> = Vec::new();
 
@@ -107,18 +107,36 @@ fn build_quests(character: &Character) -> [u8; 298] {
     let mut quests: [u8; 298] = [0; 298];
 
     let header: [u8; 10] = [87, 111, 111, 33, 6, 0, 0, 0, 42, 1];
-    let body: [u8; 288] = <[u8; 288]>::try_from(match &character.completed_difficulty {
-        None => [QUESTS_NOT_COMPLETED, QUESTS_NOT_COMPLETED, QUESTS_NOT_COMPLETED].concat(),
+    let body: [[u8; 96]; 3] = match &character.completed_difficulty {
+        None => [[0; 96], [0; 96], [0; 96]],
         Some(difficulty) => match difficulty {
-            Difficulty::NORMAL => [QUESTS_COMPLETED, QUESTS_NOT_COMPLETED, QUESTS_NOT_COMPLETED].concat(),
-            Difficulty::NIGHTMARE => [QUESTS_COMPLETED, QUESTS_COMPLETED, QUESTS_NOT_COMPLETED].concat(),
-            Difficulty::HELL => [QUESTS_COMPLETED, QUESTS_COMPLETED, QUESTS_COMPLETED].concat()
+            Difficulty::NORMAL => [QUESTS_COMPLETED, [0; 96], [0; 96]],
+            Difficulty::NIGHTMARE => [QUESTS_COMPLETED, QUESTS_COMPLETED, [0; 96]],
+            Difficulty::HELL => [QUESTS_COMPLETED, QUESTS_COMPLETED, QUESTS_COMPLETED]
         }
-    }).unwrap();
+    };
 
     quests.overwrite_with(&header, 0);
-    quests.overwrite_with(&body, header.len());
+    quests.overwrite_with(&body.concat(), header.len());
     quests
+}
+
+fn build_waypoints(character: &Character) -> [u8; 81] {
+    let mut waypoints: [u8; 81] = [0; 81];
+
+    let header: [u8; 8] = [87, 83, 1, 0, 0, 0, 80, 0];
+    let body: [[u8; 24]; 3] = match &character.completed_difficulty {
+        None => [WAYPOINTS_EMPTY, WAYPOINTS_EMPTY, WAYPOINTS_EMPTY],
+        Some(difficulty) => match difficulty {
+            Difficulty::NORMAL => [WAYPOINTS_COMPLETED, WAYPOINTS_EMPTY, WAYPOINTS_EMPTY],
+            Difficulty::NIGHTMARE => [WAYPOINTS_COMPLETED, WAYPOINTS_COMPLETED, WAYPOINTS_EMPTY],
+            Difficulty::HELL => [WAYPOINTS_COMPLETED, WAYPOINTS_COMPLETED, WAYPOINTS_COMPLETED]
+        }
+    };
+
+    waypoints.overwrite_with(&header, 0);
+    waypoints.overwrite_with(&body.concat(), header.len());
+    waypoints
 }
 
 const DEFAULT_HOTKEYS: [u8; 64] = [
@@ -144,5 +162,15 @@ const DEFAULT_MOUSE_BUTTONS: [u8; 16] = [0; 16];
 
 const DIFFICULTY_UNLOCKED: u8 = 0b1000_0000;
 
-const QUESTS_NOT_COMPLETED:[u8; 96] = [0; 96];
 const QUESTS_COMPLETED:[u8; 96] = [u8::MAX; 96];
+
+const WAYPOINTS_EMPTY:[u8; 24] = [
+    0x02, 0x01,
+    0b0000_0001, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+];
+const WAYPOINTS_COMPLETED:[u8; 24] = [
+    0x02, 0x01,
+    u8::MAX, u8::MAX, u8::MAX, u8::MAX, 0b0011_1111,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+];

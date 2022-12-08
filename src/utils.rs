@@ -11,6 +11,7 @@ impl ArrayOverwrite<u8> for [u8] {
     }
 }
 
+
 pub trait WithPadding {
     fn with_padding<const COUNT: usize>(&self) -> [u8; COUNT];
 }
