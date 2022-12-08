@@ -1,5 +1,5 @@
 pub use character::*;
-use crate::utils::ArrayOverwrite;
+use crate::utils::{ArrayOverwrite, WithPadding};
 
 mod character;
 mod utils;
@@ -12,11 +12,7 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     let file_size_temp: u32 = 0;
     let checksum_temp: u32 = 0;
     let active_weapon: u32 = 0;
-    let character_name: [u8; 16] = {
-        let mut bytes: [u8; 16] = [0; 16];
-        bytes.overwrite_with(&character.name.as_bytes(), 0);
-        bytes
-    };
+    let character_name: [u8; 16] = character.name.with_padding();
     let status: u8 = match character.mode {
         Mode::SC => 0b0010_0000,
         Mode::HC => 0b0010_0100
@@ -111,8 +107,17 @@ fn build_quests(character: &Character) -> [u8; 298] {
     let mut quests: [u8; 298] = [0; 298];
 
     let header: [u8; 10] = [87, 111, 111, 33, 6, 0, 0, 0, 42, 1];
-    quests.overwrite_with(&header, 0);
+    let body: [u8; 288] = <[u8; 288]>::try_from(match &character.completed_difficulty {
+        None => [QUESTS_NOT_COMPLETED, QUESTS_NOT_COMPLETED, QUESTS_NOT_COMPLETED].concat(),
+        Some(difficulty) => match difficulty {
+            Difficulty::NORMAL => [QUESTS_COMPLETED, QUESTS_NOT_COMPLETED, QUESTS_NOT_COMPLETED].concat(),
+            Difficulty::NIGHTMARE => [QUESTS_COMPLETED, QUESTS_COMPLETED, QUESTS_NOT_COMPLETED].concat(),
+            Difficulty::HELL => [QUESTS_COMPLETED, QUESTS_COMPLETED, QUESTS_COMPLETED].concat()
+        }
+    }).unwrap();
 
+    quests.overwrite_with(&header, 0);
+    quests.overwrite_with(&body, header.len());
     quests
 }
 
@@ -138,3 +143,6 @@ const DEFAULT_HOTKEYS: [u8; 64] = [
 const DEFAULT_MOUSE_BUTTONS: [u8; 16] = [0; 16];
 
 const DIFFICULTY_UNLOCKED: u8 = 0b1000_0000;
+
+const QUESTS_NOT_COMPLETED:[u8; 96] = [0; 96];
+const QUESTS_COMPLETED:[u8; 96] = [u8::MAX; 96];
