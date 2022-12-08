@@ -16,3 +16,10 @@ pub struct Character {
     pub last_played: u32,
     pub map_id: u32
 }
+
+impl Character {
+
+    pub fn strength(&self) -> usize {
+        30
+    }
+}

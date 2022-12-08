@@ -1,4 +1,8 @@
+use modular_bitfield::bitfield;
+use modular_bitfield::specifiers::*;
+
 pub use character::*;
+
 use crate::utils::{ArrayOverwrite, WithPadding};
 
 mod character;
@@ -47,8 +51,9 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     let mercenary: [u8; 14] = [0; 14];
     let quests: [u8; 298] = build_quests(character);
     let waypoints: [u8; 81] = build_waypoints(character);
-    let npc_introductions: [u8; 81] = build_npc_introductions(character);
-    let stats: Vec<u8> = Vec::new();
+    let npc_introductions: [u8; 51] = build_npc_introductions(character);
+    let stats: Vec<u8> = build_stats(character);
+    let items: Vec<u8> = build_items();
 
     let mut bytes: Vec<u8> = Vec::new();
     bytes.extend(signature.to_le_bytes());
@@ -78,6 +83,7 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     bytes.extend(&waypoints);
     bytes.extend(&npc_introductions);
     bytes.extend(&stats);
+    bytes.extend(&items);
 
     let file_size: [u8; 4] = (bytes.len() as u32).to_le_bytes();
     bytes[8] = file_size[0];
@@ -140,8 +146,8 @@ fn build_waypoints(character: &Character) -> [u8; 81] {
     waypoints
 }
 
-fn build_npc_introductions(character: &Character) -> [u8; 81] {
-    let mut npc_introductions: [u8; 81] = [0; 81];
+fn build_npc_introductions(character: &Character) -> [u8; 51] {
+    let mut npc_introductions: [u8; 51] = [0; 51];
 
     let header: [u8; 3] = [119, 52, 0];
     let body: [[u8; 8]; 6] = match &character.completed_difficulty {
@@ -165,6 +171,62 @@ fn build_npc_introductions(character: &Character) -> [u8; 81] {
     npc_introductions.overwrite_with(&header, 0);
     npc_introductions.overwrite_with(&body.concat(), header.len());
     npc_introductions
+}
+
+#[bitfield(filled = false)]
+#[derive(Debug)]
+pub struct Stats {
+    strength_id: B9,
+    strength_value: B10,
+    energy_id: B9,
+    energy_value: B10,
+    dexterity_id: B9,
+    dexterity_value: B10,
+    vitality_id: B9,
+    vitality_value: B10,
+    unused_stats_id: B9,
+    unused_stats_value: B10,
+    unused_skills_id: B9,
+    unused_skills_value: B8,
+    hp_current_id: B9,
+    hp_current_value: B21,
+    hp_max_id: B9,
+    hp_max_value: B21,
+    mana_current_id: B9,
+    mana_current_value: B21,
+    mana_max_id: B9,
+    mana_max_value: B21,
+    stamina_current_id: B9,
+    stamina_current_value: B21,
+    stamina_max_id: B9,
+    stamina_max_value: B21,
+    level_id: B9,
+    level_value: B7,
+    experience_id: B9,
+    experience_value: B32,
+    gold_id: B9,
+    gold_value: B25,
+    stashed_gold_id: B9,
+    stashed_gold_value: B25,
+    eof: B9
+}
+
+fn build_stats(character: &Character) -> Vec<u8> {
+    let mut stats: Vec<u8> = Vec::new();
+
+    let header: [u8; 2] = [103, 102];
+
+    let body = Stats::new()
+        .with_strength_id(0)
+        .with_eof(0x1ff);
+
+    stats.extend(&header);
+    stats.extend(&body.into_bytes());
+    stats
+}
+
+fn build_items() -> Vec<u8> {
+    Vec::from([74, 77, 0, 0, 74, 77, 0, 0, 106, 102, 107, 102, 0])
 }
 
 const DEFAULT_HOTKEYS: [u8; 64] = [
