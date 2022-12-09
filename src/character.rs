@@ -1,10 +1,10 @@
-pub use class::Class;
-pub use difficulty::Difficulty;
-pub use mode::Mode;
+use class::Class;
+use difficulty::Difficulty;
+use mode::Mode;
 
-mod class;
-mod mode;
-mod difficulty;
+pub mod class;
+pub mod mode;
+pub mod difficulty;
 
 #[derive(Debug)]
 pub struct Character {

@@ -2,7 +2,11 @@ use std::env;
 use std::ffi::OsString;
 use std::fs::File;
 use std::io::{Error, Write};
-use d2s_file_generator::{Character, Class, generate_d2s, Mode};
+
+use d2s_file_generator::character::Character;
+use d2s_file_generator::character::class::Class;
+use d2s_file_generator::character::mode::Mode;
+use d2s_file_generator::generate_d2s;
 
 fn main() -> Result<(), Error> {
     let character = Character {

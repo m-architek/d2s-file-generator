@@ -1,6 +1,9 @@
 mod resources;
 
-use d2s_file_generator::{generate_d2s, Character, Class, Mode};
+use d2s_file_generator::character::Character;
+use d2s_file_generator::character::class::Class;
+use d2s_file_generator::character::mode::Mode;
+use d2s_file_generator::generate_d2s;
 use crate::resources::read_test_resource;
 
 #[test]

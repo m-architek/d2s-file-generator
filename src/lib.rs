@@ -1,20 +1,28 @@
-use modular_bitfield::bitfield;
-use modular_bitfield::specifiers::*;
+use crate::character::Character;
+use crate::character::class::Class;
+use crate::character::difficulty::Difficulty;
+use crate::character::mode::Mode;
+use crate::d2s::{EMPTY_HOTKEYS, EMPTY_MOUSE_BUTTONS, EMPTY_ITEMS, EMPTY_SKILLS};
+use crate::d2s::checksum::calculate_checksum;
+use crate::d2s::difficulty::build_difficulty;
+use crate::d2s::npcs::build_npcs;
+use crate::d2s::quests::build_quests;
+use crate::d2s::stats::build_stats;
+use crate::d2s::waypoints::build_waypoints;
+use crate::utils::WithPadding;
 
-pub use character::*;
+pub mod character;
 
-use crate::utils::{ArrayOverwrite, WithPadding};
-
-mod character;
 mod utils;
+mod d2s;
 
 pub fn generate_d2s(character: &Character) -> Vec<u8> {
     println!("Generating {:#?}", character);
 
     let signature: u32 = 0xaa55aa55;
     let version_id: u32 = 96;
-    let file_size_temp: u32 = 0;
-    let checksum_temp: u32 = 0;
+    let file_size_placeholder: u32 = 0;
+    let checksum_placeholder: u32 = 0;
     let active_weapon: u32 = 0;
     let character_name: [u8; 16] = character.name.with_padding();
     let status: u8 = match character.mode {
@@ -40,25 +48,19 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     };
     let level: u8 = character.level;
     let last_played: u32 = character.last_played;
-    let difficulty: [u8; 3] = match &character.completed_difficulty {
-        None => [DIFFICULTY_UNLOCKED, 0, 0],
-        Some(difficulty) => match difficulty {
-            Difficulty::NORMAL => [DIFFICULTY_UNLOCKED, DIFFICULTY_UNLOCKED, 0],
-            Difficulty::NIGHTMARE | Difficulty::HELL => [DIFFICULTY_UNLOCKED, DIFFICULTY_UNLOCKED, DIFFICULTY_UNLOCKED]
-        }
-    };
+    let difficulty: [u8; 3] = build_difficulty(character);
     let map_id: u32 = character.map_id;
     let mercenary: [u8; 14] = [0; 14];
     let quests: [u8; 298] = build_quests(character);
     let waypoints: [u8; 81] = build_waypoints(character);
-    let npc_introductions: [u8; 51] = build_npc_introductions(character);
+    let npcs: [u8; 51] = build_npcs(character);
     let stats: Vec<u8> = build_stats(character);
 
     let mut bytes: Vec<u8> = Vec::new();
     bytes.extend(signature.to_le_bytes());
     bytes.extend(&version_id.to_le_bytes());
-    bytes.extend(&file_size_temp.to_le_bytes());
-    bytes.extend(&checksum_temp.to_le_bytes());
+    bytes.extend(&file_size_placeholder.to_le_bytes());
+    bytes.extend(&checksum_placeholder.to_le_bytes());
     bytes.extend(&active_weapon.to_le_bytes());
     bytes.extend(&character_name);
     bytes.extend(&status.to_le_bytes());
@@ -70,8 +72,8 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     bytes.extend(&[0; 4]);
     bytes.extend(&last_played.to_le_bytes());
     bytes.extend(&[u8::MAX; 4]);
-    bytes.extend(&DEFAULT_HOTKEYS);
-    bytes.extend(&DEFAULT_MOUSE_BUTTONS);
+    bytes.extend(&EMPTY_HOTKEYS);
+    bytes.extend(&EMPTY_MOUSE_BUTTONS);
     bytes.extend(&[u8::MAX; 32]);
     bytes.extend(&difficulty);
     bytes.extend(&map_id.to_le_bytes());
@@ -80,7 +82,7 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
     bytes.extend(&[0; 144]);
     bytes.extend(&quests);
     bytes.extend(&waypoints);
-    bytes.extend(&npc_introductions);
+    bytes.extend(&npcs);
     bytes.extend(&stats);
     bytes.extend(&EMPTY_SKILLS);
     bytes.extend(&EMPTY_ITEMS);
@@ -99,175 +101,3 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
 
     bytes
 }
-
-fn calculate_checksum(bytes: &Vec<u8>) -> u32 {
-    let mut sum: u32 = 0;
-    for byte in bytes {
-        sum = sum.rotate_left(1);
-        sum += Into::<u32>::into(*byte);
-    }
-    sum
-}
-
-fn build_quests(character: &Character) -> [u8; 298] {
-    let mut quests: [u8; 298] = [0; 298];
-
-    let header: [u8; 10] = [87, 111, 111, 33, 6, 0, 0, 0, 42, 1];
-    let body: [[u8; 96]; 3] = match &character.completed_difficulty {
-        None => [[0; 96], [0; 96], [0; 96]],
-        Some(difficulty) => match difficulty {
-            Difficulty::NORMAL => [QUESTS_COMPLETED, [0; 96], [0; 96]],
-            Difficulty::NIGHTMARE => [QUESTS_COMPLETED, QUESTS_COMPLETED, [0; 96]],
-            Difficulty::HELL => [QUESTS_COMPLETED, QUESTS_COMPLETED, QUESTS_COMPLETED]
-        }
-    };
-
-    quests.overwrite_with(&header, 0);
-    quests.overwrite_with(&body.concat(), header.len());
-    quests
-}
-
-fn build_waypoints(character: &Character) -> [u8; 81] {
-    let mut waypoints: [u8; 81] = [0; 81];
-
-    let header: [u8; 8] = [87, 83, 1, 0, 0, 0, 80, 0];
-    let body: [[u8; 24]; 3] = match &character.completed_difficulty {
-        None => [WAYPOINTS_EMPTY, WAYPOINTS_EMPTY, WAYPOINTS_EMPTY],
-        Some(difficulty) => match difficulty {
-            Difficulty::NORMAL => [WAYPOINTS_COMPLETED, WAYPOINTS_EMPTY, WAYPOINTS_EMPTY],
-            Difficulty::NIGHTMARE => [WAYPOINTS_COMPLETED, WAYPOINTS_COMPLETED, WAYPOINTS_EMPTY],
-            Difficulty::HELL => [WAYPOINTS_COMPLETED, WAYPOINTS_COMPLETED, WAYPOINTS_COMPLETED]
-        }
-    };
-
-    waypoints.overwrite_with(&header, 0);
-    waypoints.overwrite_with(&body.concat(), header.len());
-    waypoints[80] = 1;
-    waypoints
-}
-
-fn build_npc_introductions(character: &Character) -> [u8; 51] {
-    let mut npc_introductions: [u8; 51] = [0; 51];
-
-    let header: [u8; 3] = [119, 52, 0];
-    let body: [[u8; 8]; 6] = match &character.completed_difficulty {
-        None => [[0; 8], [0; 8], [0; 8], [0; 8], [0; 8], [0; 8]],
-        Some(difficulty) => match difficulty {
-            Difficulty::NORMAL => [
-                INTRODUCTIONS_COMPLETED, [0; 8], [0; 8],
-                GREETINGS_COMPLETED, [0; 8], [0; 8]
-            ],
-            Difficulty::NIGHTMARE => [
-                INTRODUCTIONS_COMPLETED, INTRODUCTIONS_COMPLETED, [0; 8],
-                GREETINGS_COMPLETED, GREETINGS_COMPLETED, [0; 8]]
-            ,
-            Difficulty::HELL => [
-                INTRODUCTIONS_COMPLETED, INTRODUCTIONS_COMPLETED, INTRODUCTIONS_COMPLETED,
-                GREETINGS_COMPLETED, GREETINGS_COMPLETED, GREETINGS_COMPLETED
-            ]
-        }
-    };
-
-    npc_introductions.overwrite_with(&header, 0);
-    npc_introductions.overwrite_with(&body.concat(), header.len());
-    npc_introductions
-}
-
-#[bitfield(filled = false)]
-#[derive(Debug)]
-pub struct Stats {
-    strength_id: B9,
-    strength_value: B10,
-    energy_id: B9,
-    energy_value: B10,
-    dexterity_id: B9,
-    dexterity_value: B10,
-    vitality_id: B9,
-    vitality_value: B10,
-    unused_stats_id: B9,
-    unused_stats_value: B10,
-    unused_skills_id: B9,
-    unused_skills_value: B8,
-    hp_current_id: B9,
-    hp_current_value: B21,
-    hp_max_id: B9,
-    hp_max_value: B21,
-    mana_current_id: B9,
-    mana_current_value: B21,
-    mana_max_id: B9,
-    mana_max_value: B21,
-    stamina_current_id: B9,
-    stamina_current_value: B21,
-    stamina_max_id: B9,
-    stamina_max_value: B21,
-    level_id: B9,
-    level_value: B7,
-    experience_id: B9,
-    experience_value: B32,
-    gold_id: B9,
-    gold_value: B25,
-    stashed_gold_id: B9,
-    stashed_gold_value: B25,
-    eof: B9
-}
-
-fn build_stats(character: &Character) -> Vec<u8> {
-    let mut stats: Vec<u8> = Vec::new();
-
-    let header: [u8; 2] = [103, 102];
-
-    let body = Stats::new()
-        .with_strength_id(0)
-        .with_eof(0x1ff);
-
-    stats.extend(&header);
-    stats.extend(&body.into_bytes());
-    stats
-}
-
-const DEFAULT_HOTKEYS: [u8; 64] = [
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-    255, 255, 0, 0,
-];
-
-const DEFAULT_MOUSE_BUTTONS: [u8; 16] = [0; 16];
-
-const DIFFICULTY_UNLOCKED: u8 = 0b1000_0000;
-
-const QUESTS_COMPLETED:[u8; 96] = [u8::MAX; 96];
-
-const WAYPOINTS_EMPTY:[u8; 24] = [
-    0x02, 0x01,
-    0b0000_0001, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-];
-const WAYPOINTS_COMPLETED:[u8; 24] = [
-    0x02, 0x01,
-    u8::MAX, u8::MAX, u8::MAX, u8::MAX, 0b0011_1111,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-];
-
-const INTRODUCTIONS_COMPLETED: [u8; 8] = [u8::MAX; 8];
-const GREETINGS_COMPLETED: [u8; 8] = [u8::MAX; 8];
-
-const EMPTY_SKILLS: [u8; 32] = [
-    105, 102,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-];
-
-const EMPTY_ITEMS: [u8; 13] = [74, 77, 0, 0, 74, 77, 0, 0, 106, 102, 107, 102, 0];
