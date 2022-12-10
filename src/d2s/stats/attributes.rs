@@ -1,9 +1,9 @@
 #![allow(dead_code)]
+#![allow(unused_braces)]
 
 use modular_bitfield::bitfield;
 use modular_bitfield::specifiers::*;
 use crate::character::Character;
-use crate::d2s::stats::StatsBlock;
 
 #[bitfield(filled = false)]
 #[derive(BitfieldSpecifier)]
@@ -18,9 +18,9 @@ pub struct Attributes {
     vitality_value: B10
 }
 
-impl StatsBlock<Attributes> for Attributes {
+impl Attributes {
 
-    fn build(character: &Character) -> Attributes {
+    pub fn build(character: &Character) -> Attributes {
         Attributes::new()
             .with_strength_id(0)
             .with_strength_value(character.strength())

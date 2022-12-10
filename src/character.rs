@@ -1,6 +1,7 @@
 use class::Class;
 use difficulty::Difficulty;
 use mode::Mode;
+use crate::character::experience::calculate_experience;
 
 pub mod class;
 pub mod mode;
@@ -57,6 +58,10 @@ impl Character {
     }
 
     pub fn experience(&self) -> u32 {
+        calculate_experience(self.level)
+    }
+
+    pub fn gold(&self) -> u32 {
         0
     }
 }

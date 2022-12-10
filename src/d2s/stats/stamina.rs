@@ -1,9 +1,9 @@
 #![allow(dead_code)]
+#![allow(unused_braces)]
 
 use modular_bitfield::bitfield;
 use modular_bitfield::specifiers::*;
 use crate::character::Character;
-use crate::d2s::stats::StatsBlock;
 
 #[bitfield(filled = false)]
 #[derive(BitfieldSpecifier)]
@@ -14,9 +14,9 @@ pub struct Stamina {
     stamina_max_value: B21
 }
 
-impl StatsBlock<Stamina> for Stamina {
+impl Stamina {
 
-    fn build(character: &Character) -> Stamina {
+    pub fn build(character: &Character) -> Stamina {
         Stamina::new()
             .with_stamina_current_id(10)
             .with_stamina_current_value(character.stamina() * 256)

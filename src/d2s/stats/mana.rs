@@ -1,9 +1,9 @@
 #![allow(dead_code)]
+#![allow(unused_braces)]
 
 use modular_bitfield::bitfield;
 use modular_bitfield::specifiers::*;
 use crate::character::Character;
-use crate::d2s::stats::StatsBlock;
 
 #[bitfield(filled = false)]
 #[derive(BitfieldSpecifier)]
@@ -14,9 +14,9 @@ pub struct Mana {
     mana_max_value: B21
 }
 
-impl StatsBlock<Mana> for Mana {
+impl Mana {
 
-    fn build(character: &Character) -> Mana {
+    pub fn build(character: &Character) -> Mana {
         Mana::new()
             .with_mana_current_id(8)
             .with_mana_current_value(character.mana() * 256)

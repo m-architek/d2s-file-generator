@@ -1,10 +1,10 @@
 #![allow(dead_code)]
+#![allow(unused_braces)]
 
 use modular_bitfield::bitfield;
 use modular_bitfield::specifiers::*;
 
 use crate::character::Character;
-use crate::d2s::stats::StatsBlock;
 
 #[bitfield(filled = false)]
 #[derive(BitfieldSpecifier)]
@@ -13,9 +13,9 @@ pub struct Experience {
     experience_value: B32
 }
 
-impl StatsBlock<Experience> for Experience {
+impl Experience {
 
-    fn build(character: &Character) -> Experience {
+    pub fn build(character: &Character) -> Experience {
         Experience::new()
             .with_experience_id(13)
             .with_experience_value(character.experience())

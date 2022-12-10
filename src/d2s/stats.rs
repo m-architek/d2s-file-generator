@@ -22,33 +22,102 @@ mod level;
 mod experience;
 mod gold;
 
+const SECTION_TERMINATOR: u16 = 0x1ff;
+
 pub fn build_stats(character: &Character) -> Vec<u8> {
     let mut stats: Vec<u8> = Vec::new();
 
     let header: [u8; 2] = [103, 102];
-
-    let body = Stats::new()
-        .with_attributes(Attributes::build(character))
-        .with_unused_points(UnusedPoints::build(character))
-        .with_life(Life::build(character))
-        .with_mana(Mana::build(character))
-        .with_stamina(Stamina::build(character))
-        .with_level(Level::build(character))
-        .with_experience(Experience::build(character))
-        .with_gold(Gold::build(character))
-        .with_section_terminator(0x1ff);
+    let body: Vec<u8> = match character.level {
+        level if level > 1 => match character.gold() {
+            gold if gold > 1 => StatsWithExpWithGold::build(character).into_bytes().to_vec(),
+            _ => StatsWithExp::build(character).into_bytes().to_vec()
+        },
+        _ => match character.gold() {
+            gold if gold > 1 => StatsWithGold::build(character).into_bytes().to_vec(),
+            _ => Stats::build(character).into_bytes().to_vec()
+        }
+    };
 
     stats.extend(&header);
-    stats.extend(&body.into_bytes());
+    stats.extend(&body);
     stats
 }
 
-trait StatsBlock<T> {
-    fn build(character: &Character) -> T;
+#[bitfield(filled = false)]
+struct Stats {
+    attributes: Attributes,
+    life: Life,
+    mana: Mana,
+    stamina: Stamina,
+    level: Level,
+    section_terminator: B9
+}
+
+impl Stats {
+    fn build(character: &Character) -> Stats {
+        Stats::new()
+            .with_attributes(Attributes::build(character))
+            .with_life(Life::build(character))
+            .with_mana(Mana::build(character))
+            .with_stamina(Stamina::build(character))
+            .with_level(Level::build(character))
+            .with_section_terminator(SECTION_TERMINATOR)
+    }
+}
+
+#[bitfield(filled = false)]
+struct StatsWithGold {
+    attributes: Attributes,
+    life: Life,
+    mana: Mana,
+    stamina: Stamina,
+    level: Level,
+    gold: Gold,
+    section_terminator: B9
+}
+
+impl StatsWithGold {
+    fn build(character: &Character) -> StatsWithGold {
+        StatsWithGold::new()
+            .with_attributes(Attributes::build(character))
+            .with_life(Life::build(character))
+            .with_mana(Mana::build(character))
+            .with_stamina(Stamina::build(character))
+            .with_level(Level::build(character))
+            .with_gold(Gold::build(character))
+            .with_section_terminator(SECTION_TERMINATOR)
+    }
+}
+
+#[bitfield(filled = false)]
+struct StatsWithExp {
+    attributes: Attributes,
+    unused_points: UnusedPoints,
+    life: Life,
+    mana: Mana,
+    stamina: Stamina,
+    level: Level,
+    experience: Experience,
+    section_terminator: B9
+}
+
+impl StatsWithExp {
+    fn build(character: &Character) -> StatsWithExp {
+        StatsWithExp::new()
+            .with_attributes(Attributes::build(character))
+            .with_unused_points(UnusedPoints::build(character))
+            .with_life(Life::build(character))
+            .with_mana(Mana::build(character))
+            .with_stamina(Stamina::build(character))
+            .with_level(Level::build(character))
+            .with_experience(Experience::build(character))
+            .with_section_terminator(SECTION_TERMINATOR)
+    }
 }
 
 #[bitfield]
-struct Stats {
+struct StatsWithExpWithGold {
     attributes: Attributes,
     unused_points: UnusedPoints,
     life: Life,
@@ -58,4 +127,19 @@ struct Stats {
     experience: Experience,
     gold: Gold,
     section_terminator: B9
+}
+
+impl StatsWithExpWithGold {
+    fn build(character: &Character) -> StatsWithExpWithGold {
+        StatsWithExpWithGold::new()
+            .with_attributes(Attributes::build(character))
+            .with_unused_points(UnusedPoints::build(character))
+            .with_life(Life::build(character))
+            .with_mana(Mana::build(character))
+            .with_stamina(Stamina::build(character))
+            .with_level(Level::build(character))
+            .with_experience(Experience::build(character))
+            .with_gold(Gold::build(character))
+            .with_section_terminator(SECTION_TERMINATOR)
+    }
 }

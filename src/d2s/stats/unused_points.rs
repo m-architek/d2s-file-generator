@@ -1,9 +1,9 @@
 #![allow(dead_code)]
+#![allow(unused_braces)]
 
 use modular_bitfield::bitfield;
 use modular_bitfield::specifiers::*;
 use crate::character::Character;
-use crate::d2s::stats::StatsBlock;
 
 #[bitfield(filled = false)]
 #[derive(BitfieldSpecifier)]
@@ -14,9 +14,9 @@ pub struct UnusedPoints {
     unused_skills_value: B8
 }
 
-impl StatsBlock<UnusedPoints> for UnusedPoints {
+impl UnusedPoints {
 
-    fn build(character: &Character) -> UnusedPoints {
+    pub fn build(character: &Character) -> UnusedPoints {
         UnusedPoints::new()
             .with_unused_stats_id(4)
             .with_unused_stats_value(character.stat_points())
