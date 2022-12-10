@@ -19,7 +19,7 @@ impl UnusedPoints {
     pub fn build(character: &Character) -> UnusedPoints {
         UnusedPoints::new()
             .with_unused_stats_id(4)
-            .with_unused_stats_value(character.stat_points())
+            .with_unused_stats_value(character.stat_points() as u16)
             .with_unused_skills_id(5)
             .with_unused_skills_value(character.skill_points())
     }

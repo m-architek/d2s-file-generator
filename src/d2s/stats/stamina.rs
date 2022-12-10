@@ -19,8 +19,8 @@ impl Stamina {
     pub fn build(character: &Character) -> Stamina {
         Stamina::new()
             .with_stamina_current_id(10)
-            .with_stamina_current_value(character.stamina() * 256)
+            .with_stamina_current_value((character.stamina() * 256.0)  as u32)
             .with_stamina_max_id(11)
-            .with_stamina_max_value(character.stamina() * 256)
+            .with_stamina_max_value((character.stamina() * 256.0) as u32)
     }
 }

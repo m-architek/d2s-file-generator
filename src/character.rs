@@ -22,39 +22,39 @@ pub struct Character {
 impl Character {
 
     pub fn strength(&self) -> u16 {
-        30
+        self.class.base_strength()
     }
 
     pub fn dexterity(&self) -> u16 {
-        20
+        self.class.base_dexterity()
     }
 
     pub fn vitality(&self) -> u16 {
-        25
+        self.class.base_vitality()
     }
 
     pub fn energy(&self) -> u16 {
-        10
+        self.class.base_energy()
     }
 
-    pub fn hp(&self) -> u32 {
-        55
+    pub fn hp(&self) -> f32 {
+        self.class.base_hp() + (self.level - 1) as f32 * self.class.level_hp()
     }
 
-    pub fn mana(&self) -> u32 {
-        10
+    pub fn mana(&self) -> f32 {
+        self.class.base_mana() + (self.level - 1) as f32 * self.class.level_mana()
     }
 
-    pub fn stamina(&self) -> u32 {
-        92
+    pub fn stamina(&self) -> f32 {
+        self.class.base_stamina() + (self.level - 1) as f32 * self.class.level_stamina()
     }
 
-    pub fn stat_points(&self) -> u16 {
-        0
+    pub fn stat_points(&self) -> u8 {
+        self.level - 1
     }
 
     pub fn skill_points(&self) -> u8 {
-        0
+        self.level - 1
     }
 
     pub fn experience(&self) -> u32 {

@@ -19,8 +19,8 @@ impl Life {
     pub fn build(character: &Character) -> Life {
         Life::new()
             .with_hp_current_id(6)
-            .with_hp_current_value(character.hp() * 256)
+            .with_hp_current_value((character.hp() * 256.0) as u32)
             .with_hp_max_id(7)
-            .with_hp_max_value(character.hp() * 256)
+            .with_hp_max_value((character.hp() * 256.0) as u32)
     }
 }
