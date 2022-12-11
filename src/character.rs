@@ -38,23 +38,24 @@ impl Character {
     }
 
     pub fn hp(&self) -> f32 {
-        self.class.base_hp() + (self.level - 1) as f32 * self.class.level_hp()
+        self.class.base_hp() + self.level_ups() as f32 * self.class.level_hp()
+            + self.game_completions() as f32 * 20.0
     }
 
     pub fn mana(&self) -> f32 {
-        self.class.base_mana() + (self.level - 1) as f32 * self.class.level_mana()
+        self.class.base_mana() + self.level_ups() as f32 * self.class.level_mana()
     }
 
     pub fn stamina(&self) -> f32 {
-        self.class.base_stamina() + (self.level - 1) as f32 * self.class.level_stamina()
+        self.class.base_stamina() + self.level_ups() as f32 * self.class.level_stamina()
     }
 
-    pub fn stat_points(&self) -> u8 {
-        self.level - 1
+    pub fn stat_points(&self) -> u16 {
+        self.level_ups() as u16 * 5 + self.game_completions() as u16 * 5
     }
 
     pub fn skill_points(&self) -> u8 {
-        self.level - 1
+        self.level_ups() + self.game_completions() * 4
     }
 
     pub fn experience(&self) -> u32 {
@@ -63,5 +64,20 @@ impl Character {
 
     pub fn gold(&self) -> u32 {
         0
+    }
+
+    fn level_ups(&self) -> u8 {
+        self.level - 1
+    }
+
+    fn game_completions(&self) -> u8 {
+        match &self.completed_difficulty {
+            None => 0,
+            Some(difficulty) => match difficulty {
+                Difficulty::NORMAL => 1,
+                Difficulty::NIGHTMARE => 2,
+                Difficulty::HELL => 3
+            }
+        }
     }
 }

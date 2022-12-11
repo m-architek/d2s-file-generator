@@ -28,13 +28,13 @@ pub fn build_stats(character: &Character) -> Vec<u8> {
     let mut stats: Vec<u8> = Vec::new();
 
     let header: [u8; 2] = [103, 102];
-    let body: Vec<u8> = match character.level {
-        level if level > 1 => match character.gold() {
-            gold if gold > 1 => StatsWithExpWithGold::build(character).into_bytes().to_vec(),
+    let body: Vec<u8> = match character.level > 1 {
+        true => match character.gold() > 0 {
+            true => StatsWithExpWithGold::build(character).into_bytes().to_vec(),
             _ => StatsWithExp::build(character).into_bytes().to_vec()
         },
-        _ => match character.gold() {
-            gold if gold > 1 => StatsWithGold::build(character).into_bytes().to_vec(),
+        _ => match character.gold() > 0 {
+            true => StatsWithGold::build(character).into_bytes().to_vec(),
             _ => Stats::build(character).into_bytes().to_vec()
         }
     };

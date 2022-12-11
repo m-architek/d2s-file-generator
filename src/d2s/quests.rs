@@ -2,7 +2,20 @@ use crate::Character;
 use crate::character::difficulty::Difficulty;
 use crate::utils::ArrayOverwrite;
 
-const QUESTS_COMPLETED:[u8; 96] = [u8::MAX; 96];
+const QUESTS_COMPLETED:[u8; 96] = [
+    1, 0, 253, 159, 253, 159, 253, 159,
+    253, 159, 253, 159, 253, 159, 1, 0,
+    1, 0, 29, 144, 121, 28, 253, 159,
+    253, 159, 253, 159, 229, 31, 1, 0,
+    1, 0, 253, 159, 253, 159, 253, 159,
+    253, 159, 253, 159, 253, 159, 1, 0,
+    1, 0, 253, 159, 253, 159, 253, 159,
+    1, 0, 0, 0, 0, 0, 0, 0,
+    1, 0, 0, 0, 0, 0, 253, 159,
+    253, 159, 253, 159, 253, 159, 253, 159,
+    253, 159, 1, 128, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0
+];
 
 pub fn build_quests(character: &Character) -> [u8; 298] {
     let mut quests: [u8; 298] = [0; 298];

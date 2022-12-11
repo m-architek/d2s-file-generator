@@ -7,8 +7,8 @@ pub fn build_difficulty(character: &Character) -> [u8; 3]  {
     match &character.completed_difficulty {
         None => [DIFFICULTY_UNLOCKED, 0, 0],
         Some(difficulty) => match difficulty {
-            Difficulty::NORMAL => [DIFFICULTY_UNLOCKED, DIFFICULTY_UNLOCKED, 0],
-            Difficulty::NIGHTMARE | Difficulty::HELL => [DIFFICULTY_UNLOCKED, DIFFICULTY_UNLOCKED, DIFFICULTY_UNLOCKED]
+            Difficulty::NORMAL => [0, DIFFICULTY_UNLOCKED, 0],
+            Difficulty::NIGHTMARE | Difficulty::HELL => [0, 0, DIFFICULTY_UNLOCKED]
         }
     }
 }

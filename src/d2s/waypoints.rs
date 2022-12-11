@@ -9,7 +9,7 @@ const WAYPOINTS_EMPTY:[u8; 24] = [
 ];
 const WAYPOINTS_COMPLETED:[u8; 24] = [
     0x02, 0x01,
-    u8::MAX, u8::MAX, u8::MAX, u8::MAX, 0b0011_1111,
+    u8::MAX, u8::MAX, u8::MAX, u8::MAX, 0b0111_1111,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 ];
 

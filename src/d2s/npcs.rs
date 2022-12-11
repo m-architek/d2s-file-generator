@@ -2,8 +2,8 @@ use crate::character::Character;
 use crate::character::difficulty::Difficulty;
 use crate::utils::ArrayOverwrite;
 
-const INTRODUCTIONS_COMPLETED: [u8; 8] = [u8::MAX; 8];
-const GREETINGS_COMPLETED: [u8; 8] = [u8::MAX; 8];
+const INTRODUCTIONS_COMPLETED: [u8; 8] = [u8::MAX, u8::MAX, u8::MAX, u8::MAX, u8::MAX, 0, 0, 0];
+const GREETINGS_COMPLETED: [u8; 8] = [u8::MAX, u8::MAX, u8::MAX, u8::MAX, u8::MAX, 0, 0, 0];
 
 pub fn build_npcs(character: &Character) -> [u8; 51] {
     let mut npc_introductions: [u8; 51] = [0; 51];
