@@ -15,6 +15,7 @@ pub struct Character {
     pub level: u8,
     pub mode: Mode,
     pub completed_difficulty: Option<Difficulty>,
+    pub gold: u32,
     pub last_played: u32,
     pub map_id: u32
 }
@@ -63,7 +64,7 @@ impl Character {
     }
 
     pub fn gold(&self) -> u32 {
-        0
+        self.gold
     }
 
     fn level_ups(&self) -> u8 {
