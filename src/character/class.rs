@@ -95,7 +95,7 @@ impl Class {
         }
     }
 
-    pub fn level_hp(&self) -> f32 {
+    pub fn level_up_hp(&self) -> f32 {
         match self {
             Class::Barbarian => 2.0,
             Class::Paladin => 2.0,
@@ -107,7 +107,7 @@ impl Class {
         }
     }
 
-    pub fn level_mana(&self) -> f32 {
+    pub fn level_up_mana(&self) -> f32 {
         match self {
             Class::Barbarian => 1.0,
             Class::Paladin => 1.5,
@@ -119,7 +119,7 @@ impl Class {
         }
     }
 
-    pub fn level_stamina(&self) -> f32 {
+    pub fn level_up_stamina(&self) -> f32 {
         match self {
             Class::Barbarian => 1.0,
             Class::Paladin => 1.0,

@@ -38,9 +38,9 @@ fn should_generate_lvl1_sc_amazon_character_with_gold() {
         level: 1,
         mode: Mode::SC,
         completed_difficulty: None,
-        gold: 2500000,
-        last_played: u32::from_le_bytes([60, 91, 155, 99]),
-        map_id: u32::from_le_bytes([206, 254, 247, 21])
+        gold: 1,
+        last_played: u32::from_le_bytes([91, 11, 159, 99]),
+        map_id: u32::from_le_bytes([150, 111, 144, 87])
     };
 
     // when

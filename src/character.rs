@@ -39,16 +39,16 @@ impl Character {
     }
 
     pub fn hp(&self) -> f32 {
-        self.class.base_hp() + self.level_ups() as f32 * self.class.level_hp()
+        self.class.base_hp() + self.level_ups() as f32 * self.class.level_up_hp()
             + self.game_completions() as f32 * 20.0
     }
 
     pub fn mana(&self) -> f32 {
-        self.class.base_mana() + self.level_ups() as f32 * self.class.level_mana()
+        self.class.base_mana() + self.level_ups() as f32 * self.class.level_up_mana()
     }
 
     pub fn stamina(&self) -> f32 {
-        self.class.base_stamina() + self.level_ups() as f32 * self.class.level_stamina()
+        self.class.base_stamina() + self.level_ups() as f32 * self.class.level_up_stamina()
     }
 
     pub fn stat_points(&self) -> u16 {
