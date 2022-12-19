@@ -2,7 +2,9 @@ use class::Class;
 use difficulty::Difficulty;
 use mode::Mode;
 use crate::character::experience::calculate_experience;
+use crate::character::name::Name;
 
+pub mod name;
 pub mod class;
 pub mod mode;
 pub mod difficulty;
@@ -10,7 +12,7 @@ mod experience;
 
 #[derive(Debug)]
 pub struct Character {
-    pub name: String,
+    pub name: Name,
     pub class: Class,
     pub level: u8,
     pub mode: Mode,

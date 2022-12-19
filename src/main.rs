@@ -1,18 +1,21 @@
 use std::env;
 use std::ffi::OsString;
 use std::fs::File;
-use std::io::{Error, Write};
+use std::io::Write;
 use std::time::{SystemTime, UNIX_EPOCH};
+
+use anyhow::Result;
 
 use d2s_file_generator::character::Character;
 use d2s_file_generator::character::class::Class;
 use d2s_file_generator::character::difficulty::Difficulty;
 use d2s_file_generator::character::mode::Mode;
+use d2s_file_generator::character::name::Name;
 use d2s_file_generator::generate_d2s;
 
-fn main() -> Result<(), Error> {
+fn main() -> Result<()> {
     let character = Character {
-        name: String::from("Marcin"),
+        name: Name::try_from("Marcin")?,
         class: Class::Paladin,
         level: 65,
         mode: Mode::SC,
@@ -28,7 +31,7 @@ fn main() -> Result<(), Error> {
     write_to_file(&path, &d2s)
 }
 
-fn build_path(character_name: &str) -> Result<OsString, Error> {
+fn build_path(character_name: &str) -> Result<OsString> {
     let file_name = format!("{}.d2s", character_name);
     let mut path = env::current_dir()?;
     path.push("output");
@@ -36,9 +39,10 @@ fn build_path(character_name: &str) -> Result<OsString, Error> {
     Ok(path.into_os_string())
 }
 
-fn write_to_file(path: &OsString, bytes: &Vec<u8>) -> Result<(), Error> {
+fn write_to_file(path: &OsString, bytes: &Vec<u8>) -> Result<()> {
     println!("Creating file: {:?}", path);
-    File::create(&path)?.write_all(bytes)
+    File::create(&path)?.write_all(bytes)?;
+    Ok(())
 }
 
 pub fn now() -> u32 {

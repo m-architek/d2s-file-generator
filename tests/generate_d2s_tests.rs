@@ -1,17 +1,19 @@
-mod resources;
-
 use d2s_file_generator::character::Character;
 use d2s_file_generator::character::class::Class;
 use d2s_file_generator::character::difficulty::Difficulty;
 use d2s_file_generator::character::mode::Mode;
+use d2s_file_generator::character::name::Name;
 use d2s_file_generator::generate_d2s;
+
 use crate::resources::read_test_resource;
+
+mod resources;
 
 #[test]
 fn should_generate_lvl1_hc_barbarian_character() {
     // given
     let character = Character {
-        name: String::from("Test"),
+        name: Name::try_from("Test").unwrap(),
         class: Class::Barbarian,
         level: 1,
         mode: Mode::HC,
@@ -33,7 +35,7 @@ fn should_generate_lvl1_hc_barbarian_character() {
 fn should_generate_lvl1_sc_amazon_character_with_gold() {
     // given
     let character = Character {
-        name: String::from("Test"),
+        name: Name::try_from("Test").unwrap(),
         class: Class::Amazon,
         level: 1,
         mode: Mode::SC,
@@ -55,7 +57,7 @@ fn should_generate_lvl1_sc_amazon_character_with_gold() {
 fn should_generate_lvl99_sc_amazon_character() {
     // given
     let character = Character {
-        name: String::from("Test"),
+        name: Name::try_from("Test").unwrap(),
         class: Class::Amazon,
         level: 99,
         mode: Mode::SC,
@@ -74,10 +76,32 @@ fn should_generate_lvl99_sc_amazon_character() {
 }
 
 #[test]
+fn should_generate_lvl2_hc_barbarian_character_with_gold() {
+    // given
+    let character = Character {
+        name: Name::try_from("Test").unwrap(),
+        class: Class::Barbarian,
+        level: 2,
+        mode: Mode::HC,
+        completed_difficulty: None,
+        gold: 1,
+        last_played: u32::from_le_bytes([187, 142, 160, 99]),
+        map_id: u32::from_le_bytes([84, 63, 179, 49])
+    };
+
+    // when
+    let result = generate_d2s(&character);
+
+    // then
+    let expected = read_test_resource("Barbarian_2_HC_GOLD").unwrap();
+    assert_eq!(result, expected)
+}
+
+#[test]
 fn should_generate_lvl35_hc_druid_character_on_nightmare() {
     // given
     let character = Character {
-        name: String::from("Test"),
+        name: Name::try_from("Test").unwrap(),
         class: Class::Druid,
         level: 35,
         mode: Mode::HC,
@@ -99,7 +123,7 @@ fn should_generate_lvl35_hc_druid_character_on_nightmare() {
 fn should_generate_lv65_sc_assassin_character_on_hell() {
     // given
     let character = Character {
-        name: String::from("Test"),
+        name: Name::try_from("Test").unwrap(),
         class: Class::Assassin,
         level: 65,
         mode: Mode::SC,
@@ -121,7 +145,7 @@ fn should_generate_lv65_sc_assassin_character_on_hell() {
 fn should_generate_lv85_hc_necromancer_character_after_hell() {
     // given
     let character = Character {
-        name: String::from("Test"),
+        name: Name::try_from("Test").unwrap(),
         class: Class::Necromancer,
         level: 85,
         mode: Mode::HC,
@@ -143,7 +167,7 @@ fn should_generate_lv85_hc_necromancer_character_after_hell() {
 fn should_generate_lvl35_sc_paladin_character_with_gold_on_nightmare() {
     // given
     let character = Character {
-        name: String::from("Test"),
+        name: Name::try_from("Test").unwrap(),
         class: Class::Paladin,
         level: 35,
         mode: Mode::SC,
@@ -165,7 +189,7 @@ fn should_generate_lvl35_sc_paladin_character_with_gold_on_nightmare() {
 fn should_generate_lv65_hc_sorceress_character_with_gold_on_hell() {
     // given
     let character = Character {
-        name: String::from("Test"),
+        name: Name::try_from("Test").unwrap(),
         class: Class::Sorceress,
         level: 65,
         mode: Mode::HC,
@@ -187,7 +211,7 @@ fn should_generate_lv65_hc_sorceress_character_with_gold_on_hell() {
 fn should_generate_lv85_sc_barbarian_character_with_gold_after_hell() {
     // given
     let character = Character {
-        name: String::from("Test"),
+        name: Name::try_from("Test").unwrap(),
         class: Class::Barbarian,
         level: 85,
         mode: Mode::SC,
