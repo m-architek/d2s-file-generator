@@ -9,6 +9,7 @@ use anyhow::Result;
 use d2s_file_generator::character::Character;
 use d2s_file_generator::character::class::Class;
 use d2s_file_generator::character::difficulty::Difficulty;
+use d2s_file_generator::character::level::Level;
 use d2s_file_generator::character::mode::Mode;
 use d2s_file_generator::character::name::Name;
 use d2s_file_generator::generate_d2s;
@@ -17,7 +18,7 @@ fn main() -> Result<()> {
     let character = Character {
         name: Name::try_from("Marcin")?,
         class: Class::Paladin,
-        level: 65,
+        level: Level::try_from(65)?,
         mode: Mode::SC,
         completed_difficulty: Some(Difficulty::NIGHTMARE),
         gold: 2500000,

@@ -1,6 +1,7 @@
 use d2s_file_generator::character::Character;
 use d2s_file_generator::character::class::Class;
 use d2s_file_generator::character::difficulty::Difficulty;
+use d2s_file_generator::character::level::Level;
 use d2s_file_generator::character::mode::Mode;
 use d2s_file_generator::character::name::Name;
 use d2s_file_generator::generate_d2s;
@@ -15,7 +16,7 @@ fn should_generate_lvl1_hc_barbarian_character() {
     let character = Character {
         name: Name::try_from("Test").unwrap(),
         class: Class::Barbarian,
-        level: 1,
+        level: Level::try_from(1).unwrap(),
         mode: Mode::HC,
         completed_difficulty: None,
         gold: 0,
@@ -37,7 +38,7 @@ fn should_generate_lvl1_sc_amazon_character_with_gold() {
     let character = Character {
         name: Name::try_from("Test").unwrap(),
         class: Class::Amazon,
-        level: 1,
+        level: Level::try_from(1).unwrap(),
         mode: Mode::SC,
         completed_difficulty: None,
         gold: 1,
@@ -59,7 +60,7 @@ fn should_generate_lvl99_sc_amazon_character() {
     let character = Character {
         name: Name::try_from("Test").unwrap(),
         class: Class::Amazon,
-        level: 99,
+        level: Level::try_from(99).unwrap(),
         mode: Mode::SC,
         completed_difficulty: None,
         gold: 0,
@@ -81,7 +82,7 @@ fn should_generate_lvl2_hc_barbarian_character_with_gold() {
     let character = Character {
         name: Name::try_from("Test").unwrap(),
         class: Class::Barbarian,
-        level: 2,
+        level: Level::try_from(2).unwrap(),
         mode: Mode::HC,
         completed_difficulty: None,
         gold: 1,
@@ -103,7 +104,7 @@ fn should_generate_lvl35_hc_druid_character_on_nightmare() {
     let character = Character {
         name: Name::try_from("Test").unwrap(),
         class: Class::Druid,
-        level: 35,
+        level: Level::try_from(35).unwrap(),
         mode: Mode::HC,
         completed_difficulty: Some(Difficulty::NORMAL),
         gold: 0,
@@ -125,7 +126,7 @@ fn should_generate_lv65_sc_assassin_character_on_hell() {
     let character = Character {
         name: Name::try_from("Test").unwrap(),
         class: Class::Assassin,
-        level: 65,
+        level: Level::try_from(65).unwrap(),
         mode: Mode::SC,
         completed_difficulty: Some(Difficulty::NIGHTMARE),
         gold: 0,
@@ -147,7 +148,7 @@ fn should_generate_lv85_hc_necromancer_character_after_hell() {
     let character = Character {
         name: Name::try_from("Test").unwrap(),
         class: Class::Necromancer,
-        level: 85,
+        level: Level::try_from(85).unwrap(),
         mode: Mode::HC,
         completed_difficulty: Some(Difficulty::HELL),
         gold: 0,
@@ -169,7 +170,7 @@ fn should_generate_lvl35_sc_paladin_character_with_gold_on_nightmare() {
     let character = Character {
         name: Name::try_from("Test").unwrap(),
         class: Class::Paladin,
-        level: 35,
+        level: Level::try_from(35).unwrap(),
         mode: Mode::SC,
         completed_difficulty: Some(Difficulty::NORMAL),
         gold: 2500000,
@@ -191,7 +192,7 @@ fn should_generate_lv65_hc_sorceress_character_with_gold_on_hell() {
     let character = Character {
         name: Name::try_from("Test").unwrap(),
         class: Class::Sorceress,
-        level: 65,
+        level: Level::try_from(65).unwrap(),
         mode: Mode::HC,
         completed_difficulty: Some(Difficulty::NIGHTMARE),
         gold: 2500000,
@@ -213,7 +214,7 @@ fn should_generate_lv85_sc_barbarian_character_with_gold_after_hell() {
     let character = Character {
         name: Name::try_from("Test").unwrap(),
         class: Class::Barbarian,
-        level: 85,
+        level: Level::try_from(85).unwrap(),
         mode: Mode::SC,
         completed_difficulty: Some(Difficulty::HELL),
         gold: 2500000,

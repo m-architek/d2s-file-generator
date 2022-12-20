@@ -46,7 +46,7 @@ pub fn generate_d2s(character: &Character) -> Vec<u8> {
         Class::Druid => 5,
         Class::Assassin => 6
     };
-    let level: u8 = character.level;
+    let level: u8 = *character.level;
     let last_played: u32 = character.last_played;
     let difficulty: [u8; 3] = build_difficulty(character);
     let map_id: u32 = character.map_id;

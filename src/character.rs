@@ -5,19 +5,21 @@ use difficulty::Difficulty;
 use mode::Mode;
 
 use crate::character::experience::calculate_experience;
+use crate::character::level::Level;
 use crate::character::name::Name;
 
 pub mod name;
 pub mod class;
 pub mod mode;
 pub mod difficulty;
+pub mod level;
 mod experience;
 
 #[derive(Debug)]
 pub struct Character {
     pub name: Name,
     pub class: Class,
-    pub level: u8,
+    pub level: Level,
     pub mode: Mode,
     pub completed_difficulty: Option<Difficulty>,
     pub gold: u32,
@@ -65,7 +67,7 @@ impl Character {
     }
 
     pub fn experience(&self) -> u32 {
-        calculate_experience(self.level)
+        calculate_experience(&self.level)
     }
 
     pub fn gold(&self) -> u32 {
@@ -73,7 +75,7 @@ impl Character {
     }
 
     fn level_ups(&self) -> u8 {
-        self.level - 1
+        *self.level - 1
     }
 
     fn game_completions(&self) -> u8 {

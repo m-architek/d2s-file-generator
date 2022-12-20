@@ -1,5 +1,7 @@
-pub fn calculate_experience(level: u8) -> u32 {
-    match level {
+use crate::character::level::Level;
+
+pub fn calculate_experience(level: &Level) -> u32 {
+    match **level {
         1 => 0,
         2 => 500,
         3 => 1500,

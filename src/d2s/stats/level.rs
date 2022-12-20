@@ -18,6 +18,6 @@ impl Level {
     pub fn build(character: &Character) -> Level {
         Level::new()
             .with_level_id(12)
-            .with_level_value(character.level)
+            .with_level_value(*character.level)
     }
 }
