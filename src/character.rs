@@ -1,6 +1,9 @@
+use std::fmt::{Display, Formatter};
+
 use class::Class;
 use difficulty::Difficulty;
 use mode::Mode;
+
 use crate::character::experience::calculate_experience;
 use crate::character::name::Name;
 
@@ -81,6 +84,21 @@ impl Character {
                 Difficulty::NIGHTMARE => 2,
                 Difficulty::HELL => 3
             }
+        }
+    }
+}
+
+impl Display for Character {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let Character {
+            name, class, mode, level, gold,
+            completed_difficulty, ..
+        } = self;
+        write!(f, "{mode} {class} {name} level {level} with {gold} gold")?;
+
+        match completed_difficulty {
+            None => write!(f, " at the start of the game"),
+            Some(difficulty) => write!(f, " after {:?}", difficulty)
         }
     }
 }

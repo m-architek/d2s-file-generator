@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter};
+
 #[derive(Debug)]
 pub enum Class {
     Barbarian,
@@ -129,5 +131,11 @@ impl Class {
             Class::Druid => 1.0,
             Class::Assassin => 1.25
         }
+    }
+}
+
+impl Display for Class {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
     }
 }

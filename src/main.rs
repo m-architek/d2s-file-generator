@@ -32,7 +32,7 @@ fn main() -> Result<()> {
 }
 
 fn build_path(character_name: &str) -> Result<OsString> {
-    let file_name = format!("{}.d2s", character_name);
+    let file_name = format!("{character_name}.d2s");
     let mut path = env::current_dir()?;
     path.push("output");
     path.push(file_name);
@@ -40,7 +40,7 @@ fn build_path(character_name: &str) -> Result<OsString> {
 }
 
 fn write_to_file(path: &OsString, bytes: &Vec<u8>) -> Result<()> {
-    println!("Creating file: {:?}", path);
+    println!("Creating file: {path:?}");
     File::create(&path)?.write_all(bytes)?;
     Ok(())
 }

@@ -1,3 +1,4 @@
+use std::fmt::{Display, Formatter};
 use std::ops::Deref;
 use anyhow::{Error, Result};
 
@@ -32,3 +33,8 @@ impl Deref<> for Name {
     }
 }
 
+impl Display for Name {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self)
+    }
+}

@@ -17,7 +17,7 @@ mod utils;
 mod d2s;
 
 pub fn generate_d2s(character: &Character) -> Vec<u8> {
-    println!("Generating {:#?}", character);
+    println!("Generating character: {character}.");
 
     let signature: u32 = 0xaa55aa55;
     let version_id: u32 = 96;
