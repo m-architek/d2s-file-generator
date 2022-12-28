@@ -29,11 +29,11 @@ pub fn build_stats(character: &Character) -> Vec<u8> {
 
     let header: [u8; 2] = [103, 102];
     let body: Vec<u8> = match *character.level {
-        1 => match character.gold() {
+        1 => match *character.gold {
             0 => Stats::build(character).into_bytes().to_vec(),
             _ => StatsWithGold::build(character).into_bytes().to_vec()
         },
-        _ => match character.gold() {
+        _ => match *character.gold {
             0 => StatsWithExp::build(character).into_bytes().to_vec(),
             _ => StatsWithExpWithGold::build(character).into_bytes().to_vec()
         }

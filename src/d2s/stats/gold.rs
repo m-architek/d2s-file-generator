@@ -18,6 +18,6 @@ impl Gold {
     pub fn build(character: &Character) -> Gold {
         Gold::new()
             .with_stashed_gold_id(15)
-            .with_stashed_gold_value(character.gold())
+            .with_stashed_gold_value(*character.gold)
     }
 }

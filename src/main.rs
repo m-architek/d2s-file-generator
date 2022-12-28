@@ -9,6 +9,7 @@ use anyhow::Result;
 use d2s_file_generator::character::Character;
 use d2s_file_generator::character::class::Class;
 use d2s_file_generator::character::difficulty::Difficulty;
+use d2s_file_generator::character::gold::Gold;
 use d2s_file_generator::character::level::Level;
 use d2s_file_generator::character::mode::Mode;
 use d2s_file_generator::character::name::Name;
@@ -21,7 +22,7 @@ fn main() -> Result<()> {
         level: Level::try_from(65)?,
         mode: Mode::SC,
         completed_difficulty: Some(Difficulty::NIGHTMARE),
-        gold: 2500000,
+        gold: Gold::try_from(2500000)?,
         last_played: now(),
         map_id: 0
     };
@@ -46,7 +47,7 @@ fn write_to_file(path: &OsString, bytes: &Vec<u8>) -> Result<()> {
     Ok(())
 }
 
-pub fn now() -> u32 {
+fn now() -> u32 {
     let now = SystemTime::now();
     now.duration_since(UNIX_EPOCH).unwrap().as_secs() as u32
 }

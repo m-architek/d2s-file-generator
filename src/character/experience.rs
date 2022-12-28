@@ -101,6 +101,6 @@ pub fn calculate_experience(level: &Level) -> u32 {
         97 => 2962400612,
         98 => 3229426756,
         99 => 3520485254,
-        _ => panic!("Level cannot be above 99")
+        0 | 99..=u8::MAX => panic!("Invalid level: {level:?}")
     }
 }

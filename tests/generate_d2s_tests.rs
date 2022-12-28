@@ -1,6 +1,7 @@
 use d2s_file_generator::character::Character;
 use d2s_file_generator::character::class::Class;
 use d2s_file_generator::character::difficulty::Difficulty;
+use d2s_file_generator::character::gold::Gold;
 use d2s_file_generator::character::level::Level;
 use d2s_file_generator::character::mode::Mode;
 use d2s_file_generator::character::name::Name;
@@ -19,7 +20,7 @@ fn should_generate_lvl1_hc_barbarian_character() {
         level: Level::try_from(1).unwrap(),
         mode: Mode::HC,
         completed_difficulty: None,
-        gold: 0,
+        gold: 0.try_into().unwrap(),
         last_played: u32::from_le_bytes([196, 191, 144, 99]),
         map_id: u32::from_le_bytes([95, 217, 87, 6])
     };
@@ -41,7 +42,7 @@ fn should_generate_lvl1_sc_amazon_character_with_gold() {
         level: Level::try_from(1).unwrap(),
         mode: Mode::SC,
         completed_difficulty: None,
-        gold: 1,
+        gold: 1.try_into().unwrap(),
         last_played: u32::from_le_bytes([91, 11, 159, 99]),
         map_id: u32::from_le_bytes([150, 111, 144, 87])
     };
@@ -63,7 +64,7 @@ fn should_generate_lvl99_sc_amazon_character() {
         level: Level::try_from(99).unwrap(),
         mode: Mode::SC,
         completed_difficulty: None,
-        gold: 0,
+        gold: Gold::ZERO,
         last_played: u32::from_le_bytes([191, 121, 148, 99]),
         map_id: u32::from_le_bytes([170, 88, 77, 52])
     };
@@ -85,7 +86,7 @@ fn should_generate_lvl2_hc_barbarian_character_with_gold() {
         level: Level::try_from(2).unwrap(),
         mode: Mode::HC,
         completed_difficulty: None,
-        gold: 1,
+        gold: Gold::try_from(1).unwrap(),
         last_played: u32::from_le_bytes([187, 142, 160, 99]),
         map_id: u32::from_le_bytes([84, 63, 179, 49])
     };
@@ -107,7 +108,7 @@ fn should_generate_lvl35_hc_druid_character_on_nightmare() {
         level: Level::try_from(35).unwrap(),
         mode: Mode::HC,
         completed_difficulty: Some(Difficulty::NORMAL),
-        gold: 0,
+        gold: Gold::ZERO,
         last_played: u32::from_le_bytes([118, 5, 150, 99]),
         map_id: u32::from_le_bytes([180, 109, 39, 121])
     };
@@ -129,7 +130,7 @@ fn should_generate_lv65_sc_assassin_character_on_hell() {
         level: Level::try_from(65).unwrap(),
         mode: Mode::SC,
         completed_difficulty: Some(Difficulty::NIGHTMARE),
-        gold: 0,
+        gold: Gold::ZERO,
         last_played: u32::from_le_bytes([210, 91, 155, 99]),
         map_id: u32::from_le_bytes([220, 43, 226, 82])
     };
@@ -151,7 +152,7 @@ fn should_generate_lv85_hc_necromancer_character_after_hell() {
         level: Level::try_from(85).unwrap(),
         mode: Mode::HC,
         completed_difficulty: Some(Difficulty::HELL),
-        gold: 0,
+        gold: Gold::ZERO,
         last_played: u32::from_le_bytes([226, 92, 155, 99]),
         map_id: u32::from_le_bytes([214, 21, 87, 69])
     };
@@ -173,7 +174,7 @@ fn should_generate_lvl35_sc_paladin_character_with_gold_on_nightmare() {
         level: Level::try_from(35).unwrap(),
         mode: Mode::SC,
         completed_difficulty: Some(Difficulty::NORMAL),
-        gold: 2500000,
+        gold: Gold::MAX,
         last_played: u32::from_le_bytes([178, 93, 155, 99]),
         map_id: u32::from_le_bytes([143, 162, 162, 79])
     };
@@ -195,7 +196,7 @@ fn should_generate_lv65_hc_sorceress_character_with_gold_on_hell() {
         level: Level::try_from(65).unwrap(),
         mode: Mode::HC,
         completed_difficulty: Some(Difficulty::NIGHTMARE),
-        gold: 2500000,
+        gold: Gold::MAX,
         last_played: u32::from_le_bytes([173, 94, 155, 99]),
         map_id: u32::from_le_bytes([151, 198, 160, 66])
     };
@@ -217,7 +218,7 @@ fn should_generate_lv85_sc_barbarian_character_with_gold_after_hell() {
         level: Level::try_from(85).unwrap(),
         mode: Mode::SC,
         completed_difficulty: Some(Difficulty::HELL),
-        gold: 2500000,
+        gold: Gold::MAX,
         last_played: u32::from_le_bytes([94, 95, 155, 99]),
         map_id: u32::from_le_bytes([18, 96, 93, 87])
     };
