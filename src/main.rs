@@ -5,6 +5,8 @@ use std::io::Write;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::Result;
+use rand;
+use rand::RngCore;
 
 use d2s_file_generator::character::Character;
 use d2s_file_generator::character::class::Class;
@@ -16,6 +18,8 @@ use d2s_file_generator::character::name::Name;
 use d2s_file_generator::generate_d2s;
 
 fn main() -> Result<()> {
+    let mut rng = rand::thread_rng();
+
     let character = Character {
         name: Name::try_from("Marcin")?,
         class: Class::Paladin,
@@ -24,7 +28,7 @@ fn main() -> Result<()> {
         completed_difficulty: Some(Difficulty::NIGHTMARE),
         gold: Gold::try_from(2500000)?,
         last_played: now(),
-        map_id: 0
+        map_id: rng.next_u32()
     };
 
     let d2s = generate_d2s(&character);
