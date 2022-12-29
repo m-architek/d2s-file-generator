@@ -1,7 +1,7 @@
 use std::env;
 use std::ffi::OsString;
 use std::fs::File;
-use std::io::Write;
+use std::io::{stdin, stdout, Write};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::Result;
@@ -20,8 +20,10 @@ use d2s_file_generator::generate_d2s;
 fn main() -> Result<()> {
     let mut rng = rand::thread_rng();
 
+    let name = handle_input("Character name [2-15 letters]", Name::try_from)?;
+
     let character = Character {
-        name: Name::try_from("Marcin")?,
+        name,
         class: Class::Paladin,
         level: Level::try_from(65)?,
         mode: Mode::SC,
@@ -35,6 +37,29 @@ fn main() -> Result<()> {
 
     let path = build_path(&character.name)?;
     write_to_file(&path, &d2s)
+}
+
+fn handle_input<T, F>(message: &str, factory: F) -> Result<T>
+    where F: Fn(String) -> Result<T>
+{
+    loop {
+        let input_string = request_input(message)?;
+        let result = factory(input_string.clone());
+        if result.is_ok() {
+            break result
+        }
+        let err = result.err().unwrap().to_string();
+        println!("Value '{}' is invalid. {}", input_string, err);
+    }
+}
+
+fn request_input(message: &str) -> Result<String> {
+    print!("{}: ", message);
+    stdout().flush()?;
+
+    let mut buffer = String::new();
+    stdin().read_line(&mut buffer)?;
+    Ok(buffer.trim().to_string())
 }
 
 fn build_path(character_name: &str) -> Result<OsString> {

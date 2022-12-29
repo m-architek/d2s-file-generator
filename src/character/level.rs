@@ -11,10 +11,10 @@ impl TryFrom<u8> for Level {
 
     fn try_from(number: u8) -> Result<Level> {
         if number < 1 {
-            return Err(Error::msg("Character level has to be at least 2"))
+            return Err(Error::msg("Character level has to be at least 2."))
         }
         if number > 99 {
-            return Err(Error::msg("Character level has to be at most 99"))
+            return Err(Error::msg("Character level has to be at most 99."))
         }
         Ok(Level(number))
     }

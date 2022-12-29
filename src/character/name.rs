@@ -16,12 +16,20 @@ impl TryFrom<&str> for Name {
     */
     fn try_from(str: &str) -> Result<Name> {
         if str.len() < 2 {
-            return Err(Error::msg("Character name has to be at least 2 characters length"))
+            return Err(Error::msg("Character name has to be at least 2 characters length."))
         }
         if str.len() > 15 {
-            return Err(Error::msg("Character name has to be at most 15 characters length"))
+            return Err(Error::msg("Character name has to be at most 15 characters length."))
         }
         Ok(Name(String::from(str)))
+    }
+}
+
+impl TryFrom<String> for Name {
+    type Error = Error;
+
+    fn try_from(str: String) -> Result<Name> {
+        Name::try_from(str.as_str())
     }
 }
 
