@@ -5,7 +5,7 @@ use anyhow::{Error, Result};
 #[derive(Debug)]
 pub struct Name(String);
 
-impl TryFrom<&str> for Name {
+impl TryFrom<String> for Name {
     type Error = Error;
 
     /*
@@ -14,22 +14,22 @@ impl TryFrom<&str> for Name {
         with the possible addition of one dash ( - ) or underscore ( _ )
         as long as it is not the first or last character of the name.
     */
-    fn try_from(str: &str) -> Result<Name> {
+    fn try_from(str: String) -> Result<Name> {
         if str.len() < 2 {
             return Err(Error::msg("Character name has to be at least 2 characters length."))
         }
         if str.len() > 15 {
             return Err(Error::msg("Character name has to be at most 15 characters length."))
         }
-        Ok(Name(String::from(str)))
+        Ok(Name(str))
     }
 }
 
-impl TryFrom<String> for Name {
+impl TryFrom<&str> for Name {
     type Error = Error;
 
-    fn try_from(str: String) -> Result<Name> {
-        Name::try_from(str.as_str())
+    fn try_from(str: &str) -> Result<Name> {
+        Name::try_from(str.to_string())
     }
 }
 

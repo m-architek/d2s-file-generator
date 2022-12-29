@@ -18,19 +18,25 @@ use d2s_file_generator::character::name::Name;
 use d2s_file_generator::generate_d2s;
 
 fn main() -> Result<()> {
-    let mut rng = rand::thread_rng();
+    let last_played = now();
+    let map_id = rand::thread_rng().next_u32();
 
     let name = handle_input("Character name [2-15 letters]", Name::try_from)?;
+    let level = handle_input("Character level [1-99]", Level::try_from)?;
+    let completed_difficulty = handle_input(
+        "Completed difficulty [NONE/NORMAL/NIGHTMARE/HELL]",
+        |input| Difficulty::resolve_completed_difficulty(&input, &level)
+    )?;
 
     let character = Character {
         name,
         class: Class::Paladin,
-        level: Level::try_from(65)?,
+        level,
         mode: Mode::SC,
-        completed_difficulty: Some(Difficulty::NIGHTMARE),
+        completed_difficulty,
         gold: Gold::try_from(2500000)?,
-        last_played: now(),
-        map_id: rng.next_u32()
+        last_played,
+        map_id
     };
 
     let d2s = generate_d2s(&character);
@@ -48,13 +54,13 @@ fn handle_input<T, F>(message: &str, factory: F) -> Result<T>
         if result.is_ok() {
             break result
         }
-        let err = result.err().unwrap().to_string();
-        println!("Value '{}' is invalid. {}", input_string, err);
+        let error = result.err().unwrap();
+        println!("Value '{input_string}' is invalid. {error}");
     }
 }
 
 fn request_input(message: &str) -> Result<String> {
-    print!("{}: ", message);
+    print!("{message}: ");
     stdout().flush()?;
 
     let mut buffer = String::new();

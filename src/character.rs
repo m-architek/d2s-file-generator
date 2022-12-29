@@ -98,7 +98,7 @@ impl Display for Character {
 
         match completed_difficulty {
             None => write!(f, " at the start of the game"),
-            Some(difficulty) => write!(f, " after {:?}", difficulty)
+            Some(difficulty) => write!(f, " after {difficulty}")
         }
     }
 }
