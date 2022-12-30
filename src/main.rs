@@ -18,23 +18,32 @@ use d2s_file_generator::character::name::Name;
 use d2s_file_generator::generate_d2s;
 
 fn main() -> Result<()> {
+    println!("Diablo II save file generator");
+    println!();
+
     let last_played = now();
     let map_id = rand::thread_rng().next_u32();
 
     let name = handle_input("Character name [2-15 letters]", Name::try_from)?;
+    let class = handle_input(
+        "Character class [1 (Amazon) / 2 (Sorceress) / 3 (Necromancer) / 4 (Paladin) / 5 (Barbarian) / 6 (Druid) / 7 (Assassin)]",
+        Class::try_from
+    )?;
+    let mode = handle_input("Character mode [SC / HC]", Mode::try_from)?;
     let level = handle_input("Character level [1-99]", Level::try_from)?;
     let completed_difficulty = handle_input(
-        "Completed difficulty [NONE/NORMAL/NIGHTMARE/HELL]",
+        "Completed difficulty [NONE / NORMAL / NIGHTMARE / HELL]",
         |input| Difficulty::resolve_completed_difficulty(&input, &level)
     )?;
+    let gold = handle_input("Stashed gold [0-2500000]", Gold::try_from)?;
 
     let character = Character {
         name,
-        class: Class::Paladin,
+        class,
         level,
-        mode: Mode::SC,
+        mode,
         completed_difficulty,
-        gold: Gold::try_from(2500000)?,
+        gold,
         last_played,
         map_id
     };
@@ -50,12 +59,15 @@ fn handle_input<T, F>(message: &str, factory: F) -> Result<T>
 {
     loop {
         let input_string = request_input(message)?;
+        println!();
+
         let result = factory(input_string.clone());
         if result.is_ok() {
             break result
         }
         let error = result.err().unwrap();
         println!("Value '{input_string}' is invalid. {error}");
+        println!();
     }
 }
 

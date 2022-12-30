@@ -1,4 +1,5 @@
 use std::fmt::{Display, Formatter};
+use anyhow::{anyhow, Error, Result};
 
 #[derive(Debug)]
 pub enum Class {
@@ -133,6 +134,32 @@ impl Class {
         }
     }
 }
+
+impl TryFrom<&str> for Class {
+    type Error = Error;
+
+    fn try_from(value: &str) -> Result<Class> {
+        match value.to_lowercase().as_str() {
+            "1" | "amazon" => Ok(Class::Amazon),
+            "2" | "sorceress" => Ok(Class::Sorceress),
+            "3" | "necromancer" => Ok(Class::Necromancer),
+            "4" | "paladin" => Ok(Class::Paladin),
+            "5" | "barbarian" => Ok(Class::Barbarian),
+            "6" | "druid" => Ok(Class::Druid),
+            "7" | "assassin" => Ok(Class::Assassin),
+            _ => Err(anyhow!("Class need to be one of: 1 (Amazon), 2 (Sorceress), 3 (Necromancer), 4 (Paladin), 5 (Barbarian), 6 (Druid), 7 (Assassin)."))
+        }
+    }
+}
+
+impl TryFrom<String> for Class {
+    type Error = Error;
+
+    fn try_from(value: String) -> Result<Class> {
+        value.as_str().try_into()
+    }
+}
+
 
 impl Display for Class {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {

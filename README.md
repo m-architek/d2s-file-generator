@@ -2,6 +2,43 @@
 
 Generate valid d2s file using simple parameters.
 
+After run, application will ask to provide following parameters:
+- name
+  - from 2 to 15 characters
+  - letters with maximum one dash or underscore
+  - need to start with a letter
+- class
+  - number or class name from following:
+    - 1 - Amazon
+    - 2 - Sorceress
+    - 3 - Necromancer
+    - 4 - Paladin
+    - 5 - Barbarian
+    - 6 - Druid
+    - 7 - Assassin
+- mode
+  - SC for softcore, HC for hardcore
+- level
+  - value from 1 to 99, note completed difficulty constraints
+- completed difficulty
+  - name of difficulty that character completed: NORMAL, NIGHTMARE or HELL, or NONE if character should be created at the start of the game
+  - there is minimal level constraint to finish each difficulty (due to "Rite of Passage" quests requirements)
+    - Normal - level 20
+    - Nightmare - level 40
+    - Hell - level 60
+- stashed gold
+  - value of gold form 0 to 2500000 (2.5 million)
+  - gold would be placed in character stash
+
+Based on that parameters d2s file would be generated that follows game rules regarding character statistics, skill points etc. Stats and skill points would be available in game for manual distribution. 
+All completed difficulties (selected one and all below that) would have completed all quests and discovered all waypoints. All quests rewards would be included in character statistics, that is:
+- \+ 4 skill points for each completed difficulty ("Den of Evil", "Radament's Lair" and "The Fallen Angel" quests rewards)
+- \+ 5 stats points for each completed difficulty ("Lam Esen's Tome" quest reward)
+- \+ 20 life for each completed difficulty ("The Golden Bird" quest reward)
+- \+ 10% to all resistances for each completed difficulty ("Prison of Ice" reward)
+
+**References**
+
 During development, I used following resources that describes d2s file format:
 - [krisives/d2s-format](https://github.com/krisives/d2s-format)
 - [nokka/d2s](https://github.com/nokka/d2s)

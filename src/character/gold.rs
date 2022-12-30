@@ -16,9 +16,18 @@ impl TryFrom<u32> for Gold {
 
     fn try_from(number: u32) -> Result<Gold> {
         if number > *Gold::MAX {
-            return Err(Error::msg("Gold amount cannot be bigger then 2.5 million coins."))
+            return Err(Error::msg("Gold amount cannot be bigger then 2.5 million."))
         }
         Ok(Gold(number))
+    }
+}
+
+impl TryFrom<String> for Gold {
+    type Error = Error;
+
+    fn try_from(value: String) -> Result<Gold> {
+        let level_number: u32 = value.parse()?;
+        Gold::try_from(level_number)
     }
 }
 
