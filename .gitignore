@@ -1,7 +1,7 @@
 target
 
-output/*
-!output/.gitkeep
+*.d2s
+!tests/resources/*.d2s
 
 .idea
 *.iml

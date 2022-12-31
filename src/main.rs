@@ -83,14 +83,17 @@ fn request_input(message: &str) -> Result<String> {
 fn build_path(character_name: &str) -> Result<OsString> {
     let file_name = format!("{character_name}.d2s");
     let mut path = env::current_dir()?;
-    path.push("output");
     path.push(file_name);
     Ok(path.into_os_string())
 }
 
 fn write_to_file(path: &OsString, bytes: &Vec<u8>) -> Result<()> {
     println!("Creating file: {path:?}");
-    File::create(&path)?.write_all(bytes)?;
+    File::options()
+        .create_new(true)
+        .write(true)
+        .open(path)?
+        .write_all(bytes)?;
     Ok(())
 }
 

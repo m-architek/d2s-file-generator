@@ -37,6 +37,8 @@ All completed difficulties (selected one and all below that) would have complete
 - \+ 20 life for each completed difficulty ("The Golden Bird" quest reward)
 - \+ 10% to all resistances for each completed difficulty ("Prison of Ice" reward)
 
+Application creates file named `{character_name}.d2s` in working directory. If such file already exists, execution will fail with an error, leaving existing file untouched.
+
 **References**
 
 During development, I used following resources that describes d2s file format:
