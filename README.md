@@ -5,8 +5,8 @@ Generate valid d2s file using simple parameters.
 After run, application will ask to provide following parameters:
 - name
   - from 2 to 15 characters
-  - letters with maximum one dash or underscore
-  - need to start with a letter
+  - only letters with maximum one hyphen ("-") or underscore ("_")
+  - need to start and end with a letter
 - class
   - number or class name from following:
     - 1 - Amazon
@@ -27,7 +27,7 @@ After run, application will ask to provide following parameters:
     - Nightmare - level 40
     - Hell - level 60
 - stashed gold
-  - value of gold form 0 to 2500000 (2.5 million)
+  - value of gold from 0 to 2500000 (2.5 million)
   - gold would be placed in character stash
 
 Based on that parameters d2s file would be generated that follows game rules regarding character statistics, skill points etc. Stats and skill points would be available in game for manual distribution. 
