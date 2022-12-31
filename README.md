@@ -2,7 +2,9 @@
 
 Generate valid d2s file using simple parameters.
 
-[DOWNLOAD](https://github.com/m-architek/d2s-file-generator/releases)
+[Download](https://github.com/m-architek/d2s-file-generator/releases)
+
+---
 
 After run, application will ask to provide following parameters for the character:
 - name
@@ -41,6 +43,8 @@ All completed difficulties (selected one and all below that) would have complete
 
 Application creates file named `{character_name}.d2s` in working directory. If such file already exists, execution will fail with an error, leaving existing file untouched.
 
+---
+
 **References**
 
 During development, I used following resources that describes d2s file format:
@@ -49,6 +53,8 @@ During development, I used following resources that describes d2s file format:
 - [Diablo II Saved Game File Format](https://user.xmission.com/~trevin/DiabloIIv1.09_File_Format.shtml)
 
 Test cases for characters at level 1 was prepared using Diablo II LoD v.1.14d. Other test cases was prepared using [Hero Editor v1.04](https://www.moddb.com/games/diablo-2-lod/downloads/hero-editor-v-104) together with values calculated with [maxroll.gg D2 planner](https://maxroll.gg/d2/d2planner/).
+
+---
 
 **Run from sources**
 
