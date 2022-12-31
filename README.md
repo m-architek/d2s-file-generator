@@ -2,7 +2,9 @@
 
 Generate valid d2s file using simple parameters.
 
-After run, application will ask to provide following parameters:
+[DOWNLOAD](https://github.com/m-architek/d2s-file-generator/releases)
+
+After run, application will ask to provide following parameters for the character:
 - name
   - from 2 to 15 characters
   - only letters with maximum one hyphen ("-") or underscore ("_")
@@ -19,10 +21,10 @@ After run, application will ask to provide following parameters:
 - mode
   - SC for softcore, HC for hardcore
 - level
-  - value from 1 to 99, note completed difficulty constraints
+  - value from 1 to 99, note completed difficulty constraints below
 - completed difficulty
   - name of difficulty that character completed: NORMAL, NIGHTMARE or HELL, or NONE if character should be created at the start of the game
-  - there is minimal level constraint to finish each difficulty (due to "Rite of Passage" quests requirements)
+  - there is minimal level constraint to finish each difficulty (due to "Rite of Passage" quest requirements)
     - Normal - level 20
     - Nightmare - level 40
     - Hell - level 60
@@ -30,12 +32,12 @@ After run, application will ask to provide following parameters:
   - value of gold from 0 to 2500000 (2.5 million)
   - gold would be placed in character stash
 
-Based on that parameters d2s file would be generated that follows game rules regarding character statistics, skill points etc. Stats and skill points would be available in game for manual distribution. 
+Based on that parameters application generates d2s file that follows game rules regarding character statistics, skill points etc. Stats and skill points would be available in game for manual distribution.
 All completed difficulties (selected one and all below that) would have completed all quests and discovered all waypoints. All quests rewards would be included in character statistics, that is:
 - \+ 4 skill points for each completed difficulty ("Den of Evil", "Radament's Lair" and "The Fallen Angel" quests rewards)
 - \+ 5 stats points for each completed difficulty ("Lam Esen's Tome" quest reward)
 - \+ 20 life for each completed difficulty ("The Golden Bird" quest reward)
-- \+ 10% to all resistances for each completed difficulty ("Prison of Ice" reward)
+- \+ 10% to all resistances for each completed difficulty ("Prison of Ice" quest reward)
 
 Application creates file named `{character_name}.d2s` in working directory. If such file already exists, execution will fail with an error, leaving existing file untouched.
 
@@ -47,3 +49,7 @@ During development, I used following resources that describes d2s file format:
 - [Diablo II Saved Game File Format](https://user.xmission.com/~trevin/DiabloIIv1.09_File_Format.shtml)
 
 Test cases for characters at level 1 was prepared using Diablo II LoD v.1.14d. Other test cases was prepared using [Hero Editor v1.04](https://www.moddb.com/games/diablo-2-lod/downloads/hero-editor-v-104) together with values calculated with [maxroll.gg D2 planner](https://maxroll.gg/d2/d2planner/).
+
+**Run from sources**
+
+You need to install [Rust](https://www.rust-lang.org/tools/install) first. Then execute command `cargo run` in application root directory to run application.
